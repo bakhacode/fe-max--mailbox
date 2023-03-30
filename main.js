@@ -1,169 +1,62 @@
-const map = mySelector(".map");
+const map = document.querySelector(".map");
 
 let townNum = 0;
 
-function makeTown(outer) {
-    townNum++;
-    let currentOuter = outer;
-    const randomNum =
-        Math.floor(Math.random() * (outer.offsetWidth / 4 + 1)) + 100;
-    let x = Math.floor(Math.random() * outer.offsetWidth * (3 / 4));
-    let y = Math.floor(Math.random() * outer.offsetHeight * (3 / 4));
+function getRandomDimensions(outer) {
+    let width = Math.floor(Math.random() * outer.offsetWidth * 0.25 + 1) + 100;
+    let height =
+        Math.floor(Math.random() * outer.offsetHeight * 0.25 + 1) + 100;
+    return [width, height];
+}
 
-    outer.insertAdjacentHTML(
-        "afterbegin",
-        `
-    <div
-        class="town${townNum}"
-        style="position:relative;
-        top:${y}px;
-        left:${x}px;
-        width:${randomNum}px;
-        height:${randomNum}px;">
-        town${townNum}
-    </div>
-    `
-    );
-    currentOuter = mySelector(`.town${townNum}`);
-    // console.log(currentOuter);
+function getRandomPosition(outer, inner) {
+    const outerRect = outer.getBoundingClientRect();
+    const innerRect = inner.getBoundingClientRect();
+    console.log(inner);
+    console.log(outerRect, innerRect);
+    let x = Math.floor(Math.random() * (outerRect.width - innerRect.width));
+    let y = Math.floor(Math.random() * (outerRect.height - innerRect.height));
+
+    return [x, y];
+}
+
+//만들어진 랜덤값이 안삐져나가는지 확인하는 함수하나 만들기 조건으로 걸어줄것
+
+function createTownElement(outer) {
+    townNum++;
+    let [width, height] = getRandomDimensions(outer);
+
+    const town = document.createElement("div");
+    town.classList.add("town");
+    town.style.width = `${width}px`;
+    town.style.height = `${height}px`;
+    town.textContent = "town" + townNum;
+    let [x, y] = getRandomPosition(outer, town);
+    town.style.left = `${x}px`;
+    town.style.top = `${y}px`;
+    if (true) {
+        //만들어진 랜덤값이 아우터 크기를 넘는지 안넘는지 확인
+        outer.appendChild(town);
+    }
     return;
 }
+
+createTownElement(map);
+
+// function repeatMakeTown(outer) {
+//     for (let i = 0; i < 3; i++) {
+//         makeTown(outer);
+//     }
+//     // makeTown(outer);
+// }
+
+// repeatMakeTown(map);
 
 function makeNum(string) {
     return (num = parseInt(string));
 }
 
-function repeatMakeTown(outer) {
-    for (let i = 0; i < 3; i++) {
-        // if (outer.childNodes.length > 0) {
-        if (1) {
-            makeTown(outer);
-            console.log(outer.childNodes);
-            console.log("있따");
-            console.log(
-                makeNum(outer.firstElementChild.style.left) +
-                    makeNum(outer.firstElementChild.style.width)
-            );
-        } else {
-            console.log("업따");
-            makeTown(outer);
-        }
-        // makeTown(outer);
-    }
+function isNotOverlap (outer, inner) {
+    
 }
-
-map.getAttribute;
-
-repeatMakeTown(map);
-
-// map.insertAdjacentHTML("afterbegin", makeTown(map));
-
-function* walkPreOrder(node) {
-    if (!node) return;
-
-    // do something here
-    yield node;
-    for (let child of node.children) {
-        yield* walkPreOrder(child);
-    }
-}
-
-function mySelector(selector) {
-    const path = selector.split(" ").map((str) => str.trim());
-
-    let currentNode = document.body;
-    while (path.length && currentNode) {
-        const currentSelector = path.shift();
-        let found = false;
-
-        for (let node of walkPreOrder(currentNode)) {
-            if (node.matches(currentSelector)) {
-                currentNode = node;
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) currentNode = null;
-    }
-    return currentNode;
-}
-
-// body 요소의 위치를 랜덤한 값으로 설정합니다.
-
-// document.body.style.left = x + "px";
-// document.body.style.top = y + "px";
-
-// const item = document.querySelector('.item');
-// const container = document.querySelector('.container');
-// const containerRect = container.getBoundingClientRect();
-
-// const x = Math.random() * containerRect.width;
-// const y = Math.random() * containerRect.height;
-// const signX = Math.random() < 0.5 ? -1 : 1;
-// const signY = Math.random() < 0.5 ? -1 : 1;
-
-// item.style.left = x * signX + 'px';
-// item.style.top = y * signY + 'px';
-
-const a = `
-    <div style="left: 100px; width: 100px; height: 100px"></div>
-`;
-
-function traverse(node) {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-        console.log(node.nodeName);
-    }
-    node = node.firstChild;
-    while (node) {
-        traverse(node);
-        node = node.nextSibling;
-    }
-}
-
-// 하위 노드를 통한 재귀
-function eachNode(rootNode, callback) {
-    if (!callback) {
-        const nodes = [];
-        eachNode(rootNode, (node) => {
-            nodes.push(node);
-        });
-        return nodes;
-    }
-
-    if (callback(rootNode) === false) {
-        return false;
-    }
-
-    if (rootNode.hasChildNodes()) {
-        for (const node of rootNode.childNodes) {
-            if (eachNode(node, callback) === false) {
-                return;
-            }
-        }
-    }
-}
-
-// function setTown(outer) {
-//     const outerSize = outer.offsetWidth;
-//     const randomSize = Math.floor(Math.random() * (outerSize / 4)) + 100;
-//     let x = Math.floor(Math.random() * outerSize * (3 / 4));
-//     let y = Math.floor(Math.random() * outerSize * (3 / 4));
-
-//     for (let i = 0; i < 2; i++) {
-//         if (randomSize + x < outerSize && randomSize + y < outerSize) {
-//             return `
-//             <div
-//                 class="town"
-//                 id="a"
-//                 style="position:absolute;
-//                 top:${y}px;
-//                 left:${x}px;
-//                 width:${randomSize}px;
-//                 height:${randomSize}px;">
-//             </div>
-//             `;
-//         }
-//         setTown(outer);
-//     }
-// }
+    

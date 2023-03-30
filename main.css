@@ -6,7 +6,7 @@ body {
 main {
   padding: 10px 30px;
   border: 1px solid #000;
-  width: 1300px;
+  width: 1500px;
   height: 1100px;
 }
 
@@ -20,6 +20,7 @@ h1 {
 }
 
 section {
+  position: relative;
   margin-right: 10px;
   width: 1000px;
   height: 1000px;
@@ -41,7 +42,7 @@ p {
 }
 
 section > div {
-  position: relative;
+  position: absolute;
   border: 1px solid #0000ff;
   border-radius: 15px;
 }
